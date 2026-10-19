@@ -1,0 +1,224 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><title>SP Testing Landscape</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a process read top to bottom in four bands (Understand, Build, Test, Decide), five doors on the left that say how you enter, a loop on the right, and a shelf of five supports whose dots mark where each one is used. */
+:root{--bg:#F3F7F6;--surface:#FFFFFF;--fg:#1A272A;--muted:#5A6D70;--line:#9DB2AF;--focus:#0E1440;--link:#1F6F8B;--navy:#0E1440;
+--mE:#3E9C78;--mEt:#E1F3EA;--mC:#334E54;--mCt:#DFE8EA;--mB:#7C7FA6;--mBt:#E8E9F2;
+--sPA:#BF5568;--sTH:#7A8A2A;--sME:#B87A2E;--sWF:#3D6FB5;--sTL:#7C8589;--sSAF:#C0392B;--safet:#FBE9E6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E181B;--surface:#162427;--fg:#E3EEEC;--muted:#97ADAF;--line:#4A6664;--focus:#C9CCF2;--link:#7CC4DD;--navy:#C9CCF2;
+--mE:#5AC38B;--mEt:#1B3A2E;--mC:#9FC3C9;--mCt:#1F3438;--mB:#A6A9D6;--mBt:#292B48;
+--sPA:#E58A9C;--sTH:#B4C45A;--sME:#E0A55A;--sWF:#7FA8E6;--sTL:#A9B2B6;--sSAF:#F0867A;--safet:#3A1F1C;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E181B;--surface:#162427;--fg:#E3EEEC;--muted:#97ADAF;--line:#4A6664;--focus:#C9CCF2;--link:#7CC4DD;--navy:#C9CCF2;
+--mE:#5AC38B;--mEt:#1B3A2E;--mC:#9FC3C9;--mCt:#1F3438;--mB:#A6A9D6;--mBt:#292B48;
+--sPA:#E58A9C;--sTH:#B4C45A;--sME:#E0A55A;--sWF:#7FA8E6;--sTL:#A9B2B6;--sSAF:#F0867A;--safet:#3A1F1C;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;padding-block:18px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:26px;line-height:1.15;margin:0 0 4px;color:var(--navy);text-wrap:balance}
+.sub{margin:0 0 12px;color:var(--muted);max-width:78ch}
+.key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted);margin:0 0 10px;align-items:center}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.key i{width:14px;height:14px;border-radius:3px;display:inline-block;border:2px solid}
+.key b{width:9px;height:9px;border-radius:50%;display:inline-block}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+svg#map{display:block;width:100%;min-width:820px;height:auto}
+.panel{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 18px;max-width:980px}
+.panel h2{margin:0 0 2px;font-size:17px;line-height:1.2}
+.meta{font-size:12px;color:var(--muted);margin-bottom:8px}
+.panel p{margin:0 0 8px;max-width:75ch}
+.panel dl{margin:8px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;max-width:80ch}
+.panel dt{font-size:12px;font-weight:700;color:#fff;border-radius:3px;padding:1px 8px;align-self:start;white-space:nowrap}
+.panel dd{margin:0}
+.panel a{color:var(--link);margin-right:14px;font-size:13px}
+.panel button.go{font:inherit;color:var(--link);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
+.links{margin-top:10px}
+.g{cursor:pointer}.chipt{font-size:11px;fill:var(--fg)}.tgl{display:inline-flex;gap:8px;align-items:center;font-size:13px;margin:0 0 8px;color:var(--muted)}.tgl input{width:16px;height:16px}
+.g:focus-visible{outline:none}.g:focus-visible .shape{stroke:var(--focus);stroke-width:3}
+.dim{opacity:.16}
+.shape{transition:opacity .15s}
+.g.sel .shape{stroke:var(--focus);stroke-width:3}
+text{font-family:Arial,Helvetica,sans-serif}
+.t1{font-size:12.5px;font-weight:700;fill:var(--fg)}.t2{font-size:10.5px;fill:var(--muted)}
+.band-t{font-size:15px;font-weight:700}.band-s{font-size:10.5px;fill:var(--muted)}
+.lab{font-size:10.5px;fill:var(--muted)}
+.hint{color:var(--muted);font-size:12.5px;margin-top:8px}
+@media (prefers-reduced-motion:reduce){.shape{transition:none}}
+</style>
+<h1>SP testing landscape</h1>
+<p class="sub">Read it from the left: choose the door that matches your situation, pass the Research Brief, then move down through the four stages. The coloured dots on each step show which supports it relies on. Select a step, a door, or any item in the shelf below and the lines show everything it connects to.</p>
+<div class="key"><span><i style="border-color:var(--mE);background:var(--mEt)"></i>Exploratory</span><span><i style="border-color:var(--mC);background:var(--mCt)"></i>Confirmatory</span><span><i style="border-color:var(--mB);background:var(--mBt)"></i>Serves both</span><span><b style="background:var(--sPA)"></b>Participants</span><span><b style="background:var(--sTH)"></b>Theory</span><span><b style="background:var(--sME)"></b>Measures</span><span><b style="background:var(--sWF)"></b>People</span><span><b style="background:var(--sTL)"></b>Tools</span><span><b style="background:var(--sSAF)"></b>Safety</span></div>
+<label class="tgl" for="all"><input type="checkbox" id="all"> Show every connection between supports and steps</label>
+<div class="scroll"><svg id="map" viewBox="0 0 1280 1170" role="group" aria-label="SP testing process map"></svg></div>
+<section class="panel" id="panel" aria-live="polite"></section>
+<script>
+var NN='https://www.nngroup.com/articles/',L=function(s){return NN+s+'/'};
+var SUP={participants:{n:'Participants',c:'--sPA',d:'Who takes part and how many'},theory:{n:'Theory',c:'--sTH',d:'Why a design should work'},measures:{n:'Measures',c:'--sME',d:'What counts as evidence'},people:{n:'People',c:'--sWF',d:'Who does the work'},tools:{n:'Tools',c:'--sTL',d:'Where evidence lives'}};
+var SKEYS=['participants','theory','measures','people','tools'];
+var BANDS=[{id:'u',t:'1 Understand',s:'Empathise and Define',mode:'E',tag:'Exploratory'},{id:'b',t:'2 Build',s:'Ideate and Prototype',mode:'B',tag:'Serves both'},{id:'t',t:'3 Test',s:'Check what was built',mode:'C',tag:'Confirmatory'},{id:'d',t:'4 Decide',s:'Close the loop',mode:'B',tag:'Serves both'}];
+var STEPS=[
+{id:'a1',b:0,i:0,t:'Talk, watch, record',s:'Interviews, field studies, diary studies',flag:1,d:'Understand people in their own context before choosing solutions. The default SP session is 45 minutes: warm up, free exploration with think-aloud, mental model probes, clinical reflection, open reflection. No task is set.',links:[['User interviews',L('user-interviews')],['Contextual inquiry',L('contextual-inquiry')],['Field studies',L('field-studies')],['Diary studies',L('diary-studies')],['Thinking aloud',L('thinking-aloud-the-1-usability-tool')],['d.school Bootleg','https://dschool.stanford.edu/tools/design-thinking-bootleg'],['IxDF: Empathise','https://ixdf.org/literature/article/stage-1-in-the-design-thinking-process-empathise-with-your-users']]},
+{id:'a2',b:0,i:1,t:'Sort and name',s:'Card sorting, mental models, concept tests',d:'Find out how people group and name things and what they believe the platform is, before changing structure or labels. Follow card sorting with tree testing once a structure exists.',links:[['Card sorting',L('card-sorting-definition')],['Tree testing',L('tree-testing')],['Mental models',L('mental-models')],['Desirability reaction words',L('desirability-reaction-words')]]},
+{id:'a3',b:0,i:2,t:'Find themes',s:'Thematic analysis, affinity diagram, maps',d:'Code what was observed, group codes into themes, and check each theme against raw data and across participant categories. Stop adding participants when new sessions stop producing new themes.',links:[['Braun and Clarke 2006','https://doi.org/10.1191/1478088706qp063oa'],['Affinity diagramming',L('affinity-diagram')],['Empathy mapping',L('empathy-mapping')],['Journey mapping',L('journey-mapping-101')],['Service blueprints',L('service-blueprints-definition')]]},
+{id:'a4',b:0,i:3,t:'Insights, hypotheses',s:'Proposed, not yet tested',d:'Write insight statements: [category] needs [need] because [reason]. Record any idea as a Proposed hypothesis. Nothing from this band is reported as a percentage or as proof.',links:[]},
+{id:'b1',b:1,i:0,t:'Ideate',s:'How Might We, design options',d:'Turn insight into open design questions and options. Psychology offers a short sourced rationale on contested or clinically sensitive choices.',links:[['How Might We questions',L('how-might-we-questions')]]},
+{id:'b2',b:1,i:1,t:'Design hypothesis',s:'Belief, outcome, signal',d:'We believe [design decision] will achieve [outcome] for [participants]. We will know this is true when [signal reaches threshold]. The primary measure, target and minimum acceptable value are chosen now.',links:[['Lean UX hypothesis format','https://www.oreilly.com/library/view/designing-for-product/9781491971451/ch05.html']]},
+{id:'b3',b:1,i:2,t:'Prototype',s:'Paper to high fidelity',d:'Make the idea testable. Privacy and visibility cues are built in so people can see, not infer, what is private.',links:[['Paper prototyping',L('paper-prototyping')]]},
+{id:'c1',b:2,i:0,t:'Pre-check',s:'Heuristics, walkthrough, pilot',d:'Two reviewers check the design against heuristics, including health context heuristics, then a pilot session catches broken tasks. Fix obvious problems first so participants are not spent on them.',links:[['Heuristic evaluation',L('how-to-conduct-a-heuristic-evaluation')],['Ten heuristics',L('ten-usability-heuristics')],['Inspection methods',L('summary-of-usability-inspection-methods')]]},
+{id:'c2',b:2,i:1,t:'Register hypothesis',s:'Criteria and decision rule, locked',d:'Lock the hypothesis, tasks, measures, sample and decision rule before the first session. Later changes need a dated amendment with a reason. This is what keeps the study confirmatory.',links:[['Confounding variables',L('confounding-variables-quantitative-ux')],['Internal vs external validity',L('internal-vs-external-validity')]]},
+{id:'c3',b:2,i:2,t:'Run the test',s:'Usability, benchmark, compare, clinical review',flag:1,d:'Moderated task-based sessions with a written scenario per feature behaviour, think-aloud and no facilitator help. Alongside, two Psychology reviewers rate the feature against the clinical appropriateness rubric. A Not appropriate result blocks release.',links:[['Usability testing 101',L('usability-testing-101')],['Task scenarios',L('task-scenarios-usability-testing')],['Better tasks',L('better-usability-tasks')],['Leading questions',L('leading-questions')]]},
+{id:'c4',b:2,i:3,t:'Measure and decide',s:'Behaviour plus attitude, intervals',d:'Report behaviour and attitude together, with a 95% confidence interval. Confirmed if the lower bound clears the minimum acceptable value; Not confirmed if the upper bound falls below it; otherwise Inconclusive. With 20 participants, 19 successes are needed for the lower bound to reach 70%.',links:[['Quantitative study guide',L('quantitative-research-study-guide')],['Usability metrics',L('usability-metrics')],['Measuring perceived usability',L('measuring-perceived-usability')]]},
+{id:'d1',b:3,i:0,t:'Synthesis session',s:'Biweekly, exploratory and confirmatory apart',d:'Psychology, Design and Tech review evidence together. Exploratory and confirmatory items are separate agenda items and never blended. Exploratory findings can come here directly from the Understand band.',links:[]},
+{id:'d2',b:3,i:1,t:'Decision and owner',s:'Accept, reject, or research more',d:'Every actionable finding gets a decision, a named owner and a status. Where disciplines read the evidence differently, the difference is recorded. Who holds final authority to prioritise is still to be confirmed.',links:[]},
+{id:'d3',b:3,i:2,t:'Tech implements',s:'Writes status back in writing',d:'Tech makes the agreed change and writes the implementation status back after every synthesis session. This is the step most likely to be skipped and the one most responsible for lost trust in feedback.',links:[]},
+{id:'d4',b:3,i:3,t:'Retest trigger',s:'Change, ageing, live-use problems',d:'Retest when the tested flow changes, a confirmed result ages, a severity 3 or 4 problem appears in live use, the user population changes, or an earlier result was inconclusive.',links:[]}];
+var DOORS=[
+{id:'o1',b:0,t:'We do not yet understand the people or the problem',d:'Enter through the Research Brief, then run the Understand band. Use when the question is what people need, expect, fear or do. The output is insight and proposed hypotheses.',to:'a1'},
+{id:'o2',b:1,t:'An idea needs shaping',d:'Enter through the Research Brief into Build. Use when insight already exists and Design needs to turn it into options and a testable hypothesis.',to:'b1'},
+{id:'o3',b:2,t:'A designed feature is ready to check',d:'Enter through the Research Brief straight into Test. Use when a feature or prototype exists and the question is whether it works. You need a written hypothesis and criteria first.',to:'c1'},
+{id:'o4',b:3,t:'Feedback arrives from live use or the intake form',d:'Goes to the Findings database and is reviewed at the next synthesis session. If more evidence is needed, it becomes a question and passes the Research Brief.',to:'d1'}];
+var GATE={id:'gate',t:'Research Brief',d:'Nothing is recruited until the brief is complete: what we need to know, why we need to know it (the decision it informs), what evidence would answer it, which method fits, and who owns the question. The question determines the method.'};
+var SAFE={id:'safe',t:'Safety fast lane',d:'Anything that could harm, mislead about safety or privacy, or suit people in distress badly. Proposed: the facilitator tells the Psychology Team lead the same working day, the lead assesses within one working day, and mitigation is decided within two. It skips the normal cadence and feeds the decision step.',links:[['BPS Code of Human Research Ethics','https://www.bps.org.uk/node/1740']]};
+var RULES='The question decides the method  ·  Exploratory and confirmatory evidence stay apart  ·  Record what happened before what it means  ·  Every finding gets an owner, status and decision';
+/* chips: id, group, label, description, links, uses[[target, how]] */
+var CH=[
+['p_pot','participants','Potential users','Target users who have not seen SP. Used to learn expectations and mental models.',[],[['a1','Expectations before exposure'],['a2','How they name and group things']]],
+['p_first','participants','First-time users','Target users in their first use. Record whether they were trained or not.',[],[['a1','Onboarding and first-use friction'],['c3','Feature tests of first use']]],
+['p_est','participants','Established users','Have used SP in real work. Familiarity inflates success, so record tenure.',[],[['c3','Feature tests'],['c4','Results compared by tenure'],['d4','Live-use problems trigger retests']]],
+['p_int','participants','Internal participants','Team, interns and volunteers. Good for pilots and practice, never a substitute for external users.',[['Employees as testers',L('employees-user-test')],['Dogfooding',L('dogfooding')]],[['c1','Pilot only'],['c2','Kept out of confirmatory samples']]],
+['p_n','participants','Sample size','Exploratory about 5 to 12 per group; formative feature test 5 to 8 per round; confirmatory about 20 to 40.',[['Why 5 users',L('why-you-only-need-to-test-with-5-users')],['How many test users',L('how-many-test-users')],['Small tests',L('responding-skepticism-small-usability-tests')]],[['a1','Add until themes repeat'],['c3','Round size'],['c4','Interval width depends on it']]],
+['p_cons','participants','Consent and withdrawal','Plain language, before recording. Right to stop at any time and to have data removed.',[['Informed consent',L('informed-consent')]],[['gate','Recorded in the brief'],['a1','Before recording'],['c3','Before recording']]],
+['p_priv','participants','Privacy and data','Pseudonymous codes, fictional test data, recordings kept outside Notion, retention set per study.',[],[['a1','Codes only'],['c3','Fictional data only']]],
+['p_dist','participants','Distress protocol','Pause, check how they are, offer to stop, do not probe, signpost support, then escalate.',[],[['a1','Applies in sessions'],['c3','Applies in sessions'],['safe','Leads to escalation']]],
+['p_bias','participants','Bias','Social desirability, and internal or trained users showing ideal rather than actual use. Tag category on every record.',[['Don\'t listen to users, watch them',L('first-rule-of-usability-dont-listen-to-users')]],[['a1','Say versus do'],['c3','Facilitator effects'],['c4','Reported with the result']]],
+['p_ethics','participants','BPS ethics code','Code of Human Research Ethics (2021) and internet mediated research guidance.',[['BPS Code (2021)','https://www.bps.org.uk/node/1740'],['BPS internet research','https://www.bps.org.uk/node/1741']],[['gate','Ethics route recorded in the brief'],['safe','Standard for safety handling']]],
+['t_dt','theory','Design Thinking modes','Empathise, Define, Ideate, Prototype, Test. Study type follows the mode.',[['d.school Bootleg','https://dschool.stanford.edu/tools/design-thinking-bootleg'],['NN/g overview',L('design-thinking')]],[['a1','Empathise'],['a3','Define'],['b1','Ideate'],['b3','Prototype'],['c3','Test']]],
+['t_formsum','theory','Formative and summative','Formative studies shape a design while it can change; summative studies judge it against a standard.',[['NN/g',L('formative-vs-summative-evaluations')]],[['c3','Formative: find problems'],['c4','Summative: confirm']]],
+['t_nielsen','theory','Nielsen heuristics','The standard usability checklist. Works best paired with testing, not instead of it (Greenberg and Buxton, 2008).',[['Ten heuristics',L('ten-usability-heuristics')],['Greenberg and Buxton 2008','http://dx.doi.org/10.11575/PRISM/30798']],[['b1','Check options against them'],['c1','Pre-check checklist']]],
+['t_health','theory','Health context heuristics','Consent clarity, risk communication and health literacy (Monkman and Kushniruk).',[['Monkman and Kushniruk','https://ebooks.iospress.nl/pdf/doi/10.3233/978-1-61499-289-9-724']],[['c1','Pre-check checklist'],['c3','Clinical appropriateness rubric']]],
+['t_cog','theory','Cognitive load and memory','Working memory, chunking, cognitive load theory, dual process thinking. Guides how much appears per screen.',[],[['b1','How much per screen'],['b3','Menus and onboarding'],['c1','Walkthrough of first use'],['c4','Cognitive load items']]],
+['t_motiv','theory','Autonomy and self-efficacy','Self-Determination Theory and self-efficacy: wording that builds or erodes a sense of capability and control.',[],[['b1','Prompt wording'],['c4','Autonomy and competence items']]],
+['t_behav','theory','Behaviour and readiness','Behaviour needs motivation, ability and a trigger; people differ in readiness to change.',[],[['b1','Prompts and sequencing'],['b3','Prompts in the prototype']]],
+['t_trust','theory','Trust and credibility','Visible credibility cues. People need to see, not infer, what is private.',[],[['b3','Privacy and source cues'],['c3','Privacy knowledge check'],['c4','Trust and privacy items']]],
+['t_hedonic','theory','Pragmatic and hedonic quality','Efficiency is not enough for a platform built on lived experience; meaning and resonance are tested too.',[['UEQ','https://www.ueq-online.org/']],[['a2','Reactions to wording'],['b3','Meaning and tone'],['c4','UEQ and experience items']]],
+['t_mental','theory','Mental models','What people believe the platform is, where things live and who can see what.',[['NN/g',L('mental-models')]],[['a1','What people believe it is'],['a2','Naming and structure']]],
+['m_succ','measures','Task success','Success, assisted or fail, defined per task before testing.',[],[['c3','Defined per task in advance'],['c4','Success rate with interval']]],
+['m_time','measures','Time on task','Seconds on successful attempts; median and range.',[],[['c3','Timed'],['c4','Reported']]],
+['m_err','measures','Errors and false starts','Wrong paths and where they happened.',[],[['c3','Counted'],['c4','Reported']]],
+['m_know','measures','Knowledge checks','For example: who can see this note? Scored correct or incorrect.',[],[['c3','Asked after a task'],['c4','Correct rate']]],
+['m_seq','measures','Single Ease Question','One post-task ease rating. SP item B1 follows this pattern.',[['MeasuringU','https://measuringu.com/seq10/']],[['c3','After every task'],['c4','Mean and distribution']]],
+['m_sus','measures','SUS','Ten item System Usability Scale for overall perceived usability.',[['usability.gov','https://www.usability.gov/how-to-and-tools/methods/system-usability-scale.html']],[['c4','After the full session']]],
+['m_ueq','measures','UEQ and UEQ-S','Pragmatic and hedonic quality, used for benchmarking.',[['UEQ','https://www.ueq-online.org/']],[['c4','After the full session']]],
+['m_items','measures','SP item bank, Sets A to H','Original, unvalidated items: profile, post-task, perceived usability, cognitive load, clinical appropriateness, trust and privacy, experience quality, intention. Diagnostic only.',[['Measuring perceived usability',L('measuring-perceived-usability')]],[['c3','Post-task and post-test sets'],['c4','Item level distributions']]],
+['m_sev','measures','Severity 0 to 4','Rated by frequency, impact and persistence by two raters, then reconciled.',[['Severity ratings',L('how-to-rate-the-severity-of-usability-problems')]],[['c3','Rated per problem'],['c4','Reported'],['d2','Feeds the decision'],['d4','3 or 4 in live use triggers retest']]],
+['m_flag','measures','Clinical flag','Separate yes or no field: could harm, mislead about safety or privacy, or suit people in distress badly. Triggers same day escalation.',[],[['a1','Can be raised'],['c3','Can be raised'],['safe','Triggers the fast lane'],['d2','Blocks Confirmed until resolved']]],
+['m_ci','measures','Confidence intervals','Adjusted Wald interval for proportions. 5 of 5 is still 51% to 100%.',[['Quantitative study guide',L('quantitative-research-study-guide')]],[['c2','Minimum acceptable value fixed first'],['c4','Computed and reported']]],
+['m_rule','measures','Decision rule','Confirmed if the lower bound clears the minimum; Not confirmed if the upper bound falls below it; otherwise Inconclusive.',[],[['c2','Fixed before sessions'],['c4','Applied exactly'],['d2','Outcome feeds the decision']]],
+['m_kappa','measures','Coding agreement','Two coders on at least 20% of sessions; percent agreement and Cohen\'s kappa.',[],[['a3','Second coder'],['c4','Rubric coded outcomes']]],
+['m_thematic','measures','Thematic analysis','Familiarise, code, search for themes, review, define, synthesise.',[['Braun and Clarke 2006','https://doi.org/10.1191/1478088706qp063oa']],[['a3','The method']]],
+['w_psych','people','Psychology Team','Clinical questions, facilitator training, instruments, clinical review and a second pair of eyes on design decisions.',[],[['a1','Owns the script'],['b1','Short sourced rationale'],['c1','Reviewer'],['c3','Clinical review'],['d1','Attends'],['safe','Team lead receives escalation']]],
+['w_design','people','Design','UX questions, design hypotheses, prototypes and validating design changes.',[],[['a4','Turns insight into design hypotheses'],['b1','Leads'],['b2','Owns'],['b3','Builds'],['d1','Attends']]],
+['w_tech','people','Tech','Feasibility, implementation and written implementation status.',[],[['d1','Attends'],['d3','Implements']]],
+['w_train','people','Facilitator training','Seven modules and an observed pilot: ethics, neutral facilitation, tasks, logging, surveys, bias.',[],[['a1','Before running sessions'],['c3','Before running sessions']]],
+['w_cert','people','Certification','Every critical checklist item and at least 80% of the rest. Recertify after six months.',[],[['a1','Only certified run sessions'],['c3','Only certified run sessions']]],
+['w_owner','people','Question owner','One named individual owns each question and its decision.',[],[['gate','Named in the brief'],['d2','Decision maker and owner']]],
+['w_synth','people','Biweekly synthesis','Psychology, Design and Tech. Exploratory and confirmatory items stay separate.',[],[['d1','The session itself'],['d2','Where decisions are made']]],
+['w_wb','people','Tech write back','Implementation status reported in writing after every synthesis session.',[],[['d3','Required'],['d2','Closes the loop']]],
+['l_notion','tools','Notion workspace','Databases for questions, studies, sessions, task results, participants, findings, hypotheses, decisions, instruments and training.',[],[['gate','Brief stored here'],['a3','Findings kept here'],['d1','Agenda views']]],
+['l_find','tools','Findings database','Observation and interpretation in separate fields; Mode set once; every finding gets owner, status and decision.',[],[['a3','Exploratory findings'],['c4','Confirmatory findings'],['d1','Synthesis agenda']]],
+['l_hyp','tools','Hypotheses database','Proposed, Registered, then a result. The page locks at registration.',[],[['a4','Proposed'],['b2','Drafted'],['c2','Registered and locked']]],
+['l_dec','tools','Decisions database','Decision, owner, status and Tech implementation status.',[],[['d2','Recorded'],['d3','Status written back'],['d4','Retest due']]],
+['l_part','tools','Participants database','Pseudonymous codes only, restricted to the Psychology Team.',[],[['a1','Logged'],['c3','Logged']]],
+['l_form','tools','Intake form','One form for everyone. It creates a Finding with Mode set by the first question.',[],[['o4','The way feedback arrives'],['d1','Entries reviewed here']]],
+['l_store','tools','Restricted storage','Recordings and the consent register. Notion holds links and timestamps only.',[],[['a1','Recordings'],['c3','Recordings']]],
+['l_proto','tools','Prototyping tools','Penpot or Figma for high fidelity prototypes to test.',[],[['b3','Where it is built']]]];
+var NS='http://www.w3.org/2000/svg',svg=document.getElementById('map'),panel=document.getElementById('panel');
+function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function txt(p,x,y,s,c,extra){var t=el('text',{x:x,y:y,'class':c},p);t.textContent=s;if(extra)for(var k in extra)t.setAttribute(k,extra[k]);return t}
+function wrap(s,n){var w=s.split(' '),l=[],c='';w.forEach(function(x){if((c+' '+x).trim().length>n&&c){l.push(c);c=x}else c=(c+' '+x).trim()});if(c)l.push(c);return l}
+var MC={E:['--mE','--mEt'],C:['--mC','--mCt'],B:['--mB','--mBt']};
+el('defs',{},svg).innerHTML='<marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0L8,4L0,8z" fill="context-stroke"/></marker>';
+var BX=292,BW=880,BH=112,BY=function(b){return 72+b*140},NW=168,NH=88,NX=function(i){return 426+i*190},NYo=14;
+var reg={},chips={};
+var gB=el('g',{},svg),gA=el('g',{},svg),gAll=el('g',{fill:'none'},svg),gS=el('g',{},svg),gL=el('g',{fill:'none'},svg),gT=el('g',{},svg);
+function arrow(d,c,w){return el('path',{d:d,fill:'none',stroke:'var('+(c||'--line')+')','stroke-width':w||2,'marker-end':'url(#ar)'},gA)}
+var rb=el('g',{},gB);el('rect',{x:14,y:14,width:1252,height:42,rx:5,fill:'var(--surface)',stroke:'var(--line)'},rb);txt(rb,640,40,RULES,'t2',{'text-anchor':'middle',style:'font-size:12px;fill:var(--navy);font-weight:700'});
+BANDS.forEach(function(b,bi){var g=el('g',{},gB),y=BY(bi),c=MC[b.mode];
+ el('rect',{x:BX,y:y,width:BW,height:BH,rx:8,fill:'var('+c[1]+')',stroke:'var('+c[0]+')','stroke-width':2},g);
+ txt(g,BX+14,y+34,b.t,'band-t',{style:'fill:var('+c[0]+')'});txt(g,BX+14,y+52,b.s,'band-s');
+ el('rect',{x:BX+14,y:y+64,width:100,height:20,rx:10,fill:'var('+c[0]+')'},g);txt(g,BX+64,y+78,b.tag,'t2',{'text-anchor':'middle',style:'fill:var(--surface);font-weight:700;font-size:10.5px'});
+ if(bi<3){arrow('M730,'+(y+BH+2)+' L730,'+(y+BH+26),'--line',2.5);txt(gT,740,y+BH+19,['insights and hypotheses','something testable','evidence'][bi],'lab')}});
+var gg=el('g',{'class':'g',tabindex:0,role:'button','aria-label':'Research Brief gate'},gS);el('rect',{x:226,y:72,width:44,height:392,rx:8,fill:'var(--navy)','class':'shape'},gg);
+txt(gg,248,268,'RESEARCH BRIEF','t1',{'text-anchor':'middle',style:'fill:var(--surface);letter-spacing:2px;font-size:12px',transform:'rotate(-90 248 268)'});
+reg.gate={g:gg,kind:'gate',data:GATE,pt:[248,464]};
+DOORS.forEach(function(o){var y=BY(o.b)+BH/2-34,g=el('g',{'class':'g',tabindex:0,role:'button','aria-label':o.t},gS),mc=MC[BANDS[o.b].mode];
+ el('rect',{x:14,y:y,width:192,height:68,rx:34,fill:'var(--surface)',stroke:'var('+mc[0]+')','stroke-width':2.5,'class':'shape'},g);
+ wrap(o.t,28).slice(0,3).forEach(function(l,i,a){txt(g,110,y+34-(a.length-1)*7+i*14+4,l,'t2',{'text-anchor':'middle',style:'fill:var(--fg);font-size:11px;font-weight:700'})});
+ if(o.b===3)arrow('M206,'+(y+34)+' L'+(BX-2)+','+(y+34),mc[0],2.5);else arrow('M206,'+(y+34)+' L224,'+(y+34),mc[0],2.5);
+ reg[o.id]={g:g,kind:'door',data:o,pt:[110,y+68]}});
+[0,1,2].forEach(function(b){var y=BY(b)+BH/2;arrow('M270,'+y+' L'+(BX-2)+','+y,MC[BANDS[b].mode][0],2.5)});
+STEPS.forEach(function(s){var x=NX(s.i),y=BY(s.b)+NYo,c=MC[BANDS[s.b].mode],g=el('g',{'class':'g',tabindex:0,role:'button','aria-label':s.t},gS);
+ el('rect',{x:x,y:y,width:NW,height:NH,rx:6,fill:'var(--surface)',stroke:'var('+c[0]+')','stroke-width':1.8,'class':'shape'},g);
+ var yy=y+19;wrap(s.t,22).forEach(function(l){txt(g,x+10,yy,l,'t1');yy+=15});yy+=1;wrap(s.s,29).slice(0,2).forEach(function(l){txt(g,x+10,yy,l,'t2');yy+=12.5});
+ s.dots=el('g',{},g);
+ if(s.i<3&&STEPS.some(function(q){return q.b===s.b&&q.i===s.i+1}))arrow('M'+(x+NW+1)+','+(y+NH/2)+' L'+(x+NW+21)+','+(y+NH/2),c[0],2.2);
+ reg[s.id]={g:g,kind:'step',data:s,flag:s.flag,pt:[x+NW/2,y+NH],x:x,y:y,chips:[]}});
+(function(){var y=632,g=el('g',{'class':'g',tabindex:0,role:'button','aria-label':'Safety fast lane'},gS);
+ el('rect',{x:BX,y:y,width:BW,height:64,rx:8,fill:'var(--safet)',stroke:'var(--sSAF)','stroke-width':2,'class':'shape'},g);
+ txt(g,BX+14,y+27,'Safety fast lane','band-t',{style:'fill:var(--sSAF)'});txt(g,BX+14,y+46,'Same working day to the Psychology Team lead. Skips the normal cadence and feeds the decision.','band-s');
+ reg.safe={g:g,kind:'safe',data:SAFE,pt:[730,y+64]};
+ var dg=el('g',{'class':'g',tabindex:0,role:'button','aria-label':'Safety door'},gS);
+ el('rect',{x:14,y:y+2,width:192,height:60,rx:30,fill:'var(--surface)',stroke:'var(--sSAF)','stroke-width':2.5,'class':'shape'},dg);
+ wrap('Someone may be harmed or distressed',28).forEach(function(l,i){txt(dg,110,y+29+i*14,l,'t2',{'text-anchor':'middle',style:'fill:var(--fg);font-size:11px;font-weight:700'})});
+ reg.o5={g:dg,kind:'door',safe:1,data:{id:'o5',t:'Someone may be harmed or distressed',d:'Skips the Research Brief and every other step. Pause, check how the person is, offer to stop, do not probe, signpost support, then tell the Psychology Team lead the same working day.'},pt:[110,y+62]};
+ arrow('M206,'+(y+32)+' L'+(BX-2)+','+(y+32),'--sSAF',2.5);arrow('M702,'+(y-2)+' L702,'+(BY(3)+NYo+NH+4),'--sSAF',2.5);txt(gT,712,y-8,'mitigation decided','lab',{style:'fill:var(--sSAF)'})})();
+var e=1172;arrow('M'+e+',520 L1206,520 L1206,'+(BY(2)+BH/2+10)+' L'+(e+2)+','+(BY(2)+BH/2+10),'--mC',2.5);txt(gT,1218,500,'retest the feature','lab',{transform:'rotate(-90 1218 500)'});
+arrow('M'+e+',552 L1240,552 L1240,'+(BY(0)+BH/2)+' L'+(e+2)+','+(BY(0)+BH/2),'--mE',2.5);txt(gT,1252,540,'new questions','lab',{transform:'rotate(-90 1252 540)'});
+// shelf
+var SY=722;txt(gT,14,SY+4,'What the steps draw on. Select any item to draw its connections to the steps above.','lab',{style:'font-size:12px;font-weight:700;fill:var(--navy)'});
+SKEYS.forEach(function(k,i){var x=14+i*253,c=SUP[k].c,col=CH.filter(function(q){return q[1]===k});
+ el('rect',{x:x,y:SY+16,width:240,height:42,rx:6,fill:'var('+c+')'},gT);txt(gT,x+12,SY+34,SUP[k].n,'t1',{style:'fill:var(--surface);font-size:13.5px'});txt(gT,x+12,SY+50,SUP[k].d,'t2',{style:'fill:var(--surface);opacity:.92'});
+ col.forEach(function(q,j){var cy=SY+66+j*27,g=el('g',{'class':'g',tabindex:0,role:'button','aria-label':q[2]},gS);
+  el('rect',{x:x,y:cy,width:240,height:23,rx:5,fill:'var(--surface)',stroke:'var('+c+')','stroke-width':1.5,'class':'shape'},g);
+  txt(g,x+10,cy+15.5,q[2],'chipt');
+  chips[q[0]]={g:g,kind:'chip',id:q[0],grp:k,label:q[2],d:q[3],links:q[4],uses:q[5],pt:[x+120,cy],data:{t:q[2]}};reg[q[0]]=chips[q[0]];
+  q[5].forEach(function(u){var t=reg[u[0]];if(t&&t.chips)t.chips.push({id:q[0],note:u[1]})})})});
+// step dots by group (and non-step targets keep lists)
+STEPS.forEach(function(s){var r=reg[s.id],gs=SKEYS.filter(function(k){return r.chips.some(function(c){return chips[c.id].grp===k})});gs.forEach(function(k,i){el('circle',{cx:r.x+14+i*14,cy:r.y+NH-10,r:4.8,fill:'var('+SUP[k].c+')'},s.dots)});if(s.flag)el('circle',{cx:r.x+NW-14,cy:r.y+NH-10,r:5.2,fill:'var(--sSAF)'},s.dots)});
+['gate','safe','o4'].forEach(function(id){reg[id].chips=reg[id].chips||[]});
+CH.forEach(function(q){q[5].forEach(function(u){var t=reg[u[0]];if(t&&['gate','safe','o4'].indexOf(u[0])>-1)t.chips.push({id:q[0],note:u[1]})})});
+// lines
+function curve(p,q,c,w,o,layer){var y1=(p[1]+q[1])/2,d='M'+p[0]+','+p[1]+' C'+p[0]+','+y1+' '+q[0]+','+y1+' '+q[0]+','+q[1];
+ if(layer===gL)el('path',{d:d,stroke:'var(--surface)','stroke-width':w+3,opacity:.9},layer);el('path',{d:d,stroke:'var('+c+')','stroke-width':w,opacity:o},layer)}
+var allOn=false;function drawAll(){gAll.innerHTML='';if(!allOn)return;CH.forEach(function(q){q[5].forEach(function(u){var t=reg[u[0]];if(t)curve(chips[q[0]].pt,t.pt,SUP[q[1]].c,1.2,.28,gAll)})})}
+document.getElementById('all').addEventListener('change',function(ev){allOn=ev.target.checked;drawAll()});
+var sel=null;
+function related(id){var r=reg[id],o={};o[id]=1;if(!r)return o;
+ if(r.kind==='chip')r.uses.forEach(function(u){o[u[0]]=1});
+ else if(r.chips)r.chips.forEach(function(c){o[c.id]=1});
+ if(r.kind==='door'){if(r.data.to)o[r.data.to]=1;if(r.safe)o.safe=1;else if(r.data.id!=='o4')o.gate=1}
+ if(r.kind==='safe'){o.o5=1;o.d2=1}if(r.kind==='gate'){['o1','o2','o3'].forEach(function(k){o[k]=1})}
+ if(r.kind==='step'&&r.flag){o.safe=1;o.o5=1}
+ return o}
+function paint(){var rel=sel?related(sel):null;Object.keys(reg).forEach(function(k){var g=reg[k].g;g.classList.toggle('dim',!!rel&&!rel[k]);g.classList.toggle('sel',sel===k)});
+ [gB,gA].forEach(function(g){g.style.opacity=rel?.35:1});gAll.style.opacity=rel?.12:1;gL.innerHTML='';
+ if(sel){var r=reg[sel];if(r.kind==='chip')r.uses.forEach(function(u){var t=reg[u[0]];if(t)curve(r.pt,t.pt,SUP[r.grp].c,2.5,1,gL)});
+  else if(r.chips)r.chips.forEach(function(c){var q=chips[c.id];curve(q.pt,r.pt,SUP[q.grp].c,2,1,gL)})}}
+function go(id){sel=id;paint();show()}
+function show(){panel.innerHTML='';var r=sel&&reg[sel];
+ function h(t,c){var x=document.createElement('h2');x.textContent=t;if(c)x.style.color='var('+c+')';panel.appendChild(x)}
+ function m(t){var x=document.createElement('div');x.className='meta';x.textContent=t;panel.appendChild(x)}
+ function p(t){var x=document.createElement('p');x.textContent=t;panel.appendChild(x)}
+ function btn(t,id){var b=document.createElement('button');b.className='go';b.type='button';b.textContent=t;b.onclick=function(){go(id)};return b}
+ function rows(items){var dl=document.createElement('dl');items.forEach(function(it){var dt=document.createElement('dt');dt.style.background=it.bg;dt.textContent=it.k;var dd=document.createElement('dd');if(it.id){dd.appendChild(btn(it.v,it.id));dd.appendChild(document.createTextNode(it.note?'. '+it.note:''))}else dd.textContent=it.v;dl.appendChild(dt);dl.appendChild(dd)});panel.appendChild(dl)}
+ if(!r){h('How to read this map');p('Start at the left. Each door describes a situation. Four of them pass through the Research Brief into the stage that fits; feedback from live use goes to the synthesis session; and a safety concern skips everything.');p('The four stages run top to bottom. Understand is exploratory and answers what we should build. Test is confirmatory and answers whether what we built works. Build and Decide serve both. Two loops on the right send results round again.');p('The shelf at the bottom holds everything the steps draw on: participants, theory, measures, people and tools. Select any item and lines show every step it connects to. Tick the box above the map to see all connections at once.');var x=document.createElement('div');x.className='hint';x.textContent=Object.keys(chips).length+' items on the shelf, '+STEPS.length+' steps, '+CH.reduce(function(a,q){return a+q[5].length},0)+' connections.';panel.appendChild(x);return}
+ var d=r.data;
+ if(r.kind==='step'){var b=BANDS[d.b];h(d.t,MC[b.mode][0]);m(b.t.slice(2)+' stage · '+b.tag);p(d.d);p('Includes: '+d.s+'.');
+  var items=[];SKEYS.forEach(function(k){r.chips.filter(function(c){return chips[c.id].grp===k}).forEach(function(c){items.push({k:SUP[k].n,bg:'var('+SUP[k].c+')',v:chips[c.id].label,id:c.id,note:c.note})})});
+  if(d.flag)items.push({k:'Safety',bg:'var(--sSAF)',v:'Safety fast lane',id:'safe',note:'A clinical flag can be raised here'});rows(items)}
+ else if(r.kind==='chip'){h(r.label,SUP[r.grp].c);m(SUP[r.grp].n+' · connects to '+r.uses.length+' places');p(r.d);rows(r.uses.map(function(u){return {k:'Used in',bg:'var('+SUP[r.grp].c+')',v:reg[u[0]].data.t,id:u[0],note:u[1]}}))}
+ else if(r.kind==='door'){h(d.t,r.safe?'--sSAF':null);m('Way in');p(d.d);if(d.to)rows([{k:'Goes to',bg:'var(--navy)',v:reg[d.to].data.t,id:d.to}]);if(r.chips&&r.chips.length)rows(r.chips.map(function(c){return {k:SUP[chips[c.id].grp].n,bg:'var('+SUP[chips[c.id].grp].c+')',v:chips[c.id].label,id:c.id,note:c.note}}))}
+ else if(r.kind==='gate'||r.kind==='safe'){h(d.t,r.kind==='gate'?'--navy':'--sSAF');m(r.kind==='gate'?'The gate for every study':'Bypasses the normal cadence');p(d.d);if(r.chips&&r.chips.length)rows(r.chips.map(function(c){return {k:SUP[chips[c.id].grp].n,bg:'var('+SUP[chips[c.id].grp].c+')',v:chips[c.id].label,id:c.id,note:c.note}}))}
+ var ls=(d.links||r.links||[]);if(ls.length){var w=document.createElement('div');w.className='links';ls.forEach(function(l){var a=document.createElement('a');a.href=l[1];a.target='_blank';a.rel='noopener';a.textContent=l[0];w.appendChild(a)});panel.appendChild(w)}}
+Object.keys(reg).forEach(function(k){var g=reg[k].g;g.addEventListener('click',function(ev){ev.stopPropagation();go(sel===k?null:k)});g.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();go(sel===k?null:k)}})});
+svg.addEventListener('click',function(){go(null)});
+paint();show();
+</script>
+</body></html>
